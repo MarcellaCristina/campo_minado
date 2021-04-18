@@ -3,18 +3,303 @@
     <head>
         <title></title>
         <script src="js/campo-minado.js"></script>
+		<style>
+			div {
+				border: 2px solid;
+			}
+			#exibir-execucao {
+				float: left;
+				width: 45%;
+				color: gray;
+				margin: 20px 0px 0px 0px;
+			}
+			#exibir-execucao-logica {
+				float: right;
+				width: 45%;
+				color: green;
+				margin: 20px 0px 0px 0px;
+			}
+		</style>
     </head>
     <body>
-        <div id="exibir-execucao"></div>
+        <div id="exibir-execucao">
+			<div>JOGO BURRO</div>
+		</div>
+        <div id="exibir-execucao-logica">
+			<div>JOGO LÓGICO</div>
+		</div>
 
         <script>
             var campoMinado = new CampoMinado();
-            
             
             document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
             document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
             
             // Realize sua codificação a partir deste ponto, boa sorte!
+			
+			
+			//---------- INÍCIO - CÓDIGO 001 ----------\\
+			
+            var ContinuarJogando_01 = true;
+			var StatusJogo, linha, coluna;
+			//----------
+			while(ContinuarJogando_01){
+				// Executa uma jogada
+				linha = (Math.floor(Math.random() * 9) + 1);
+				coluna = (Math.floor(Math.random() * 9) + 1);
+				document.getElementById('exibir-execucao').innerHTML += '<pre>' + linha + '-' + coluna + '</pre>';
+				
+				campoMinado.Abrir(linha, coluna);
+				// Recupera o status do jogo
+				StatusJogo = campoMinado.JogoStatus();
+				
+				if(StatusJogo == 2){
+					document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+					document.getElementById('exibir-execucao').innerHTML += '<pre>Fim de Jogo!</br>Você Perdeu!</pre>';
+					ContinuarJogando_01 = false;
+				}
+				else if(StatusJogo == 0){
+					document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+				}
+				else{
+					document.getElementById('exibir-execucao').innerHTML += '<pre>Você Venceu!!</pre>';
+				}
+			}
+			//---------- FIM - CÓDIGO 001 ----------\\
+			
+			
+			
+			//---------- INÍCIO - CÓDIGO 002 ----------\\
+			var campoMinado2 = new CampoMinado();
+            
+            document.getElementById('exibir-execucao-logica').innerHTML += '----------- Início do jogo -----------';
+            document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + campoMinado2.Tabuleiro() + '</pre>';
+			
+			var tabuleiro = campoMinado2.Tabuleiro();
+			// SEPARANDO A STRING
+			tabuleiro = tabuleiro.split('');
+            
+			// ----------
+			// MATRIZ QUE VAI GUARDAR O JOGO COM AS BOMBAS
+			var provaveisBombas = [[],[],[],[],[],[],[],[],[]];
+			// MONTANDO MATRIZ COM O JOGO E AS BOMBAS
+			var contador = 0;
+			// ----------
+			for (var x = 0; x < 9; x++){
+				for (var y = 0; y < 9; y++){
+					// SE FOR FIM DE UMA LINHA
+					if(tabuleiro[contador] == "\r"){
+						contador = contador + 2;
+					}
+					// ADD CARACTERE AO VETOR
+					provaveisBombas[x][y] = tabuleiro[contador];
+					contador++;
+				}
+			}
+			
+			// FUNÇÃO PARA IMPRIMIR O TABULEIRO
+			retornaStrTabuleiroBombas = function(){
+				//----------
+				var tabuleiro_02 = "";
+
+				for (var x = 0; x < 9; x++){
+					for (var y = 0; y < 9; y++){
+						tabuleiro_02 += provaveisBombas[x][y];
+					}
+					//----------
+					if (x != 8){
+						tabuleiro_02 +=  "" + "\r\n";
+					}
+				}
+				return tabuleiro_02;
+			}
+			
+			imprimirNaTela = function(texto){
+				document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + texto + '</pre>';
+			}
+			
+			//----------
+			var continuarJogando_02 = true;
+			var somaNumAoRedor = 0;
+			var aindaNaoEhBomba = 0;
+			var zeroAoRedor = false;
+			
+			var temCasaFechadaAoRedor = false;
+			var temZeroAoRedor = false;
+			
+			zerarVariaveis = function(){
+				somaNumAoRedor = 0;
+				aindaNaoEhBomba = 0;
+				zeroAoRedor = false;
+			}
+			
+			//----------
+			while(continuarJogando_02){
+				//----------
+				imprimirNaTela(retornaStrTabuleiroBombas());
+				//----------
+				for (var x = 0; x < 9; x++){
+					for (var y = 0; y < 9; y++){
+						imprimirNaTela(x+"-"+y+">>"+provaveisBombas[x][y]);
+						// PRIMEIRA LINHA
+						if(x == 0){
+							// PRIMEIRA COLUNA
+							if(y == 0){
+								// MESMA LINHA / PRÓXIMA COLUNA
+								if(provaveisBombas[x][y+1] != "-" && provaveisBombas[x][y+1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// PRÓXIMA LINHA / MESMA COLUNA
+								if(provaveisBombas[x+1][y] != "-" && provaveisBombas[x+1][y] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// PRÓXIMA LINHA / PRÓXIMA COLUNA
+								if(provaveisBombas[x+1][y+1] != "-" && provaveisBombas[x+1][y+1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// MACA UMA BOMBA
+								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
+									provaveisBombas[x][y] = "*";
+								}
+								zerarVariaveis();
+							}
+							// COLUNAS DO MEIO
+							else if(y > 0 && y < 8){
+								
+							}
+							// ÚLTIMA COLUNA
+							else if(y == 8){
+								// MESMA LINHA / COLUNA ANTERIOR
+								if(provaveisBombas[x][y-1] != "-" && provaveisBombas[x][y-1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// PRÓXIMA LINHA / MESMA COLUNA
+								if(provaveisBombas[x+1][y] != "-" && provaveisBombas[x+1][y] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// PRÓXIMA LINHA / COLUNA ANTERIOR
+								if(provaveisBombas[x+1][y-1] != "-" && provaveisBombas[x+1][y-1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// MARCAR UMA BOMBA
+								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
+									provaveisBombas[x][y] = "*";
+								}
+								zerarVariaveis();
+							}
+						}
+						// LINHAS DO MEIO
+						else if(x > 0 && x < 8){
+							// PRIMEIRA COLUNA
+							// COLUNAS DO MEIO
+							// ÚLTIMA COLUNA
+						}
+						// ÚLTIMA LINHA
+						else if (x == 8){
+							// PRIMEIRA COLUNA
+							if(y == 0){
+								// MESMA LINHA / PRÓXIMA COLUNA
+								if(provaveisBombas[x][y+1] >= 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+								}
+								// LINHA ANTERIOR / MESMA COLUNA
+								if(provaveisBombas[x-1][y] >= 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+								}
+								// LINHA ANTERIOR / PRÓXIMA COLUNA
+								if(provaveisBombas[x-1][y+1] >= 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+								}
+								// MACA UMA BOMBA
+								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-"){
+									provaveisBombas[x][y] = "*";
+								}
+								zerarVariaveis();
+							}
+							// COLUNAS DO MEIO
+							else if(y > 0 && y < 8){
+								
+							}
+							// ÚLTIMA COLUNA
+							else if(y == 8){
+								// MESMA LINHA / COLUNA ANTERIOR
+								if(provaveisBombas[x][y-1] != "-" && provaveisBombas[x][y-1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// LINHA ANTERIOR / MESMA COLUNA
+								if(provaveisBombas[x-1][y] != "-" && provaveisBombas[x-1][y] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// LINHA ANTERIOR / COLUNA ANTERIOR
+								if(provaveisBombas[x-1][y-1] != "-" && provaveisBombas[x-1][y-1] != 0){
+									somaNumAoRedor++;
+								}
+								else{
+									aindaNaoEhBomba++;
+									zeroAoRedor = true;
+								}
+								// MACA UMA BOMBA
+								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
+									provaveisBombas[x][y] = "*";
+								}
+								else{
+									campoMinado2.Abrir(x+1, y+1);
+								}
+								zerarVariaveis();
+							}
+						}
+					}
+				}
+				
+				continuarJogando_02 = false;
+			}
+			
+			imprimirNaTela(retornaStrTabuleiroBombas());
+			
+            document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + campoMinado2.Tabuleiro() + '</pre>';
+			
+			//---------- FIM - CÓDIGO 002 ----------\\
         </script>
     </body>
 </html>
