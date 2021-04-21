@@ -3,303 +3,261 @@
     <head>
         <title></title>
         <script src="js/campo-minado.js"></script>
-		<style>
-			div {
-				border: 2px solid;
-			}
-			#exibir-execucao {
-				float: left;
-				width: 45%;
-				color: gray;
-				margin: 20px 0px 0px 0px;
-			}
-			#exibir-execucao-logica {
-				float: right;
-				width: 45%;
-				color: green;
-				margin: 20px 0px 0px 0px;
-			}
-		</style>
     </head>
     <body>
-        <div id="exibir-execucao">
-			<div>JOGO BURRO</div>
-		</div>
-        <div id="exibir-execucao-logica">
-			<div>JOGO LÓGICO</div>
-		</div>
+        <div id="exibir-execucao"></div>
 
         <script>
             var campoMinado = new CampoMinado();
             
-            document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
-            document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
             
+           document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
+           document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';          
+			
+			
             // Realize sua codificação a partir deste ponto, boa sorte!
 			
+			//Jogo randômico
+			/*var linha, coluna;
 			
-			//---------- INÍCIO - CÓDIGO 001 ----------\\
+			while (campoMinado.JogoStatus() == 0){
 			
-            var ContinuarJogando_01 = true;
-			var StatusJogo, linha, coluna;
-			//----------
-			while(ContinuarJogando_01){
-				// Executa uma jogada
-				linha = (Math.floor(Math.random() * 9) + 1);
-				coluna = (Math.floor(Math.random() * 9) + 1);
-				document.getElementById('exibir-execucao').innerHTML += '<pre>' + linha + '-' + coluna + '</pre>';
+				//fazendo escolha de número aleatórios, sem casa decimal (floor)			
+				linha = Math.floor(Math.random() * 9);
+				coluna = Math.floor(Math.random() * 9);
 				
 				campoMinado.Abrir(linha, coluna);
-				// Recupera o status do jogo
-				StatusJogo = campoMinado.JogoStatus();
+				document.getElementById('exibir-execucao').innerHTML += '<pre>' + linha + "--" + coluna + '</pre>'; 
+				document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>'; 
 				
-				if(StatusJogo == 2){
-					document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
-					document.getElementById('exibir-execucao').innerHTML += '<pre>Fim de Jogo!</br>Você Perdeu!</pre>';
-					ContinuarJogando_01 = false;
-				}
-				else if(StatusJogo == 0){
-					document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
-				}
-				else{
-					document.getElementById('exibir-execucao').innerHTML += '<pre>Você Venceu!!</pre>';
-				}
 			}
-			//---------- FIM - CÓDIGO 001 ----------\\
+			if(campoMinado.JogoStatus() == 1){
+				document.getElementById('exibir-execucao').innerHTML += '<pre>Você Ganhou!! </pre>'; 
+			}
+			else {
+				document.getElementById('exibir-execucao').innerHTML += '<pre>GameOver, você encontrou uma bomba! </pre>'; 
+			} */
+			
+			// -------FIM DO JOGO RANDÔMICO---------
 			
 			
+			// analisando casas ao redor
 			
-			//---------- INÍCIO - CÓDIGO 002 ----------\\
-			var campoMinado2 = new CampoMinado();
-            
-            document.getElementById('exibir-execucao-logica').innerHTML += '----------- Início do jogo -----------';
-            document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + campoMinado2.Tabuleiro() + '</pre>';
 			
-			var tabuleiro = campoMinado2.Tabuleiro();
-			// SEPARANDO A STRING
-			tabuleiro = tabuleiro.split('');
-            
-			// ----------
-			// MATRIZ QUE VAI GUARDAR O JOGO COM AS BOMBAS
-			var provaveisBombas = [[],[],[],[],[],[],[],[],[]];
-			// MONTANDO MATRIZ COM O JOGO E AS BOMBAS
-			var contador = 0;
-			// ----------
-			for (var x = 0; x < 9; x++){
-				for (var y = 0; y < 9; y++){
-					// SE FOR FIM DE UMA LINHA
-					if(tabuleiro[contador] == "\r"){
-						contador = contador + 2;
+			imprimirTela = function(impressao){
+				document.getElementById('exibir-execucao').innerHTML += '<pre>' + impressao + '</pre>'; 
+			}
+			
+			//função para converter a string do jogo em matriz. 
+			matrizTabuleiro = function(pJogo){				
+				var vJogo = pJogo.split(''); //separando a string inicial em um array.
+				var matriz = [[],[],[],[],[],[],[],[],[]];
+				var cont = 0;
+				
+				for(var x = 0; x<9; x++){
+					for(var y = 0; y<9; y++){
+						//se for final de linha "\r"
+						if(vJogo[cont] == "\r"){
+							cont = cont + 2;
+						}
+						matriz[x][y] = vJogo[cont];
+						cont++;
 					}
-					// ADD CARACTERE AO VETOR
-					provaveisBombas[x][y] = tabuleiro[contador];
-					contador++;
 				}
+				
+				return matriz;
 			}
 			
-			// FUNÇÃO PARA IMPRIMIR O TABULEIRO
-			retornaStrTabuleiroBombas = function(){
-				//----------
-				var tabuleiro_02 = "";
+			matrizMeuJogo = function () {
+				var tabuleiro = "";
 
 				for (var x = 0; x < 9; x++){
-					for (var y = 0; y < 9; y++){
-						tabuleiro_02 += provaveisBombas[x][y];
+					for (var y = 0; y < 9; y++)
+					{
+						tabuleiro += meuJogo[x][y];
 					}
-					//----------
-					if (x != 8){
-						tabuleiro_02 +=  "" + "\r\n";
+
+					if (x != 8)
+					{
+						tabuleiro +=  "" + "\r\n";
 					}
 				}
-				return tabuleiro_02;
+
+				return tabuleiro;
 			}
 			
-			imprimirNaTela = function(texto){
-				document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + texto + '</pre>';
-			}
-			
-			//----------
-			var continuarJogando_02 = true;
-			var somaNumAoRedor = 0;
-			var aindaNaoEhBomba = 0;
-			var zeroAoRedor = false;
-			
-			var temCasaFechadaAoRedor = false;
-			var temZeroAoRedor = false;
-			
-			zerarVariaveis = function(){
-				somaNumAoRedor = 0;
-				aindaNaoEhBomba = 0;
-				zeroAoRedor = false;
-			}
-			
-			//----------
-			while(continuarJogando_02){
-				//----------
-				imprimirNaTela(retornaStrTabuleiroBombas());
-				//----------
+			compararTabuleiros = function(){
+				var t = matrizTabuleiro(campoMinado.Tabuleiro());
 				for (var x = 0; x < 9; x++){
 					for (var y = 0; y < 9; y++){
-						imprimirNaTela(x+"-"+y+">>"+provaveisBombas[x][y]);
-						// PRIMEIRA LINHA
-						if(x == 0){
-							// PRIMEIRA COLUNA
-							if(y == 0){
-								// MESMA LINHA / PRÓXIMA COLUNA
-								if(provaveisBombas[x][y+1] != "-" && provaveisBombas[x][y+1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// PRÓXIMA LINHA / MESMA COLUNA
-								if(provaveisBombas[x+1][y] != "-" && provaveisBombas[x+1][y] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// PRÓXIMA LINHA / PRÓXIMA COLUNA
-								if(provaveisBombas[x+1][y+1] != "-" && provaveisBombas[x+1][y+1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// MACA UMA BOMBA
-								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
-									provaveisBombas[x][y] = "*";
-								}
-								zerarVariaveis();
-							}
-							// COLUNAS DO MEIO
-							else if(y > 0 && y < 8){
-								
-							}
-							// ÚLTIMA COLUNA
-							else if(y == 8){
-								// MESMA LINHA / COLUNA ANTERIOR
-								if(provaveisBombas[x][y-1] != "-" && provaveisBombas[x][y-1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// PRÓXIMA LINHA / MESMA COLUNA
-								if(provaveisBombas[x+1][y] != "-" && provaveisBombas[x+1][y] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// PRÓXIMA LINHA / COLUNA ANTERIOR
-								if(provaveisBombas[x+1][y-1] != "-" && provaveisBombas[x+1][y-1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// MARCAR UMA BOMBA
-								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
-									provaveisBombas[x][y] = "*";
-								}
-								zerarVariaveis();
-							}
-						}
-						// LINHAS DO MEIO
-						else if(x > 0 && x < 8){
-							// PRIMEIRA COLUNA
-							// COLUNAS DO MEIO
-							// ÚLTIMA COLUNA
-						}
-						// ÚLTIMA LINHA
-						else if (x == 8){
-							// PRIMEIRA COLUNA
-							if(y == 0){
-								// MESMA LINHA / PRÓXIMA COLUNA
-								if(provaveisBombas[x][y+1] >= 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-								}
-								// LINHA ANTERIOR / MESMA COLUNA
-								if(provaveisBombas[x-1][y] >= 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-								}
-								// LINHA ANTERIOR / PRÓXIMA COLUNA
-								if(provaveisBombas[x-1][y+1] >= 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-								}
-								// MACA UMA BOMBA
-								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-"){
-									provaveisBombas[x][y] = "*";
-								}
-								zerarVariaveis();
-							}
-							// COLUNAS DO MEIO
-							else if(y > 0 && y < 8){
-								
-							}
-							// ÚLTIMA COLUNA
-							else if(y == 8){
-								// MESMA LINHA / COLUNA ANTERIOR
-								if(provaveisBombas[x][y-1] != "-" && provaveisBombas[x][y-1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// LINHA ANTERIOR / MESMA COLUNA
-								if(provaveisBombas[x-1][y] != "-" && provaveisBombas[x-1][y] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// LINHA ANTERIOR / COLUNA ANTERIOR
-								if(provaveisBombas[x-1][y-1] != "-" && provaveisBombas[x-1][y-1] != 0){
-									somaNumAoRedor++;
-								}
-								else{
-									aindaNaoEhBomba++;
-									zeroAoRedor = true;
-								}
-								// MACA UMA BOMBA
-								if(somaNumAoRedor > 0 && aindaNaoEhBomba == 0 && provaveisBombas[x][y] == "-" && zeroAoRedor == false){
-									provaveisBombas[x][y] = "*";
-								}
-								else{
-									campoMinado2.Abrir(x+1, y+1);
-								}
-								zerarVariaveis();
-							}
-						}
+						if(meuJogo[x][y] != t[x][y] && meuJogo[x][y] != "*" ){
+							meuJogo[x][y] = t[x][y];						
+						}						
 					}
-				}
-				
-				continuarJogando_02 = false;
+				}	
 			}
 			
-			imprimirNaTela(retornaStrTabuleiroBombas());
+			var meuJogo = matrizTabuleiro(campoMinado.Tabuleiro());
+			var coordX = null;
+			var coordY = null;
+			//condiçoes para jogada
+			var qntBombaEncontra = 0;
+			var conteudoCasa = null;
+			var qntCasaFechada = 0;
 			
-            document.getElementById('exibir-execucao-logica').innerHTML += '<pre>' + campoMinado2.Tabuleiro() + '</pre>';
-			
-			//---------- FIM - CÓDIGO 002 ----------\\
+			zerarVariaveis = function(){
+				coordX = null;
+				coordY = null;
+				qntBombaEncontra = 0;
+				conteudoCasa = null;
+				qntCasaFechada = 0;
+			}
+						
+			imprimirTela("----------- Status: Jogo em aberto00000 -----------");
+			while (campoMinado.JogoStatus() == 0){
+				for(var x = 0; x < 9; x++){
+					for(var y = 0; y < 9; y++){
+					
+						//if(x == 1 && y == 7){
+						//	imprimirTela("teste");
+						//}
+						
+						conteudoCasa = meuJogo[x][y];
+						//condição para analisar possivel jogada
+						if(conteudoCasa != 0 && conteudoCasa != '*' && conteudoCasa != "-"){
+							//linha anterior e coluna anterior da casa analisada
+							if(x-1 >= 0 && y-1 >= 0){
+								if(meuJogo[x-1][y-1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x-1][y-1] == "-"){
+									qntCasaFechada++;
+									coordX = x-1;
+									coordY = y-1;
+								}
+							}
+							//linha anterior e mesma coluna da casa analisada
+							if(x-1 >= 0){
+								if(meuJogo[x-1][y] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x-1][y] == "-"){
+									qntCasaFechada++;
+									coordX = x-1;
+									coordY = y;
+								}
+							}
+							//linha anterior e próxima coluna
+							if (x-1 >= 0 && y+1 <= 8){
+								if(meuJogo[x-1][y+1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x-1][y+1] == "-"){
+									qntCasaFechada++;
+									coordX = x-1;
+									coordY = y+1;
+								}
+							}
+							//mesma linha e próxima coluna
+							if(y+1 <= 8){
+								if(meuJogo[x][y+1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x][y+1] == "-"){
+									qntCasaFechada++;
+									coordX = x;
+									coordY = y+1;
+								}
+							}
+							//próxima linha e próxima coluna
+							if (x+1 <= 8 && y+1 <= 8) {
+								if(meuJogo[x+1][y+1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x+1][y+1] == "-"){
+									qntCasaFechada++;
+									coordX = x+1;
+									coordY = y+1;
+								}
+							}
+							//próxima linha e mesma coluna
+							if(x+1 <= 8){
+								if(meuJogo[x+1][y] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x+1][y] == "-"){
+									qntCasaFechada++;
+									coordX = x+1;
+									coordY = y;
+								}
+							}
+							//próxima linha e coluna anterior
+							if(x+1 <= 8 && y-1 >= 0){
+								if(meuJogo[x+1][y-1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x+1][y-1] == "-"){
+									qntCasaFechada++;
+									coordX = x+1;
+									coordY = y-1;
+								}
+							}
+							//mesma linha e coluna anterior
+							if(y-1 >= 0){
+								if(meuJogo[x][y-1] == "*"){
+									qntBombaEncontra++;
+								}
+								if(meuJogo[x][y-1] == "-"){
+									qntCasaFechada++;
+									coordX = x;
+									coordY = y-1;
+									
+								}
+							
+							}
+							
+							if(qntCasaFechada > 0){
+								//condições para abrir casa
+								if(conteudoCasa == qntBombaEncontra){
+									//abrir todas as casas fechadas em volta
+									campoMinado.Abrir(coordX+1, coordY+1);
+									compararTabuleiros();
+									imprimirTela(matrizMeuJogo())
+									imprimirTela("Abrindo casa:  linha(" + (coordX+1) + ")" + "/" + "coluna(" + (coordY+1) + ")" );
+									if(campoMinado.JogoStatus() == 0){
+										imprimirTela("----------- Status: Jogo em aberto -----------");
+									}
+								}
+								
+								//condição para marcar bomba
+								if((qntCasaFechada + qntBombaEncontra) == conteudoCasa){
+									//marcar bomba
+									meuJogo[coordX][coordY] = "*";
+									imprimirTela(matrizMeuJogo())
+									imprimirTela("Bomba marcada:  linha(" + (coordX+1) + ")" + "/" + "coluna(" + (coordY+1) + ")" );
+									if(campoMinado.JogoStatus() == 0){
+										imprimirTela("----------- Status: Jogo em aberto -----------");
+									}
+								}
+							}
+							zerarVariaveis();
+						}
+						else{
+							zerarVariaveis();
+						}
+						
+					}
+					
+					
+				}
+				
+				if(campoMinado.JogoStatus() == 1){
+						imprimirTela("----------- Status: Vitoria -----------");
+						imprimirTela(matrizMeuJogo());
+					}				
+				
+			}
+		
         </script>
     </body>
 </html>
